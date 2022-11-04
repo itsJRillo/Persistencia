@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
             BufferedReader br = new BufferedReader(fr);
             String line;
 
-            while (line) {
+            while ((line = br.readLine()) != null) {
                 System.out.println(line);
                 contenido.setText(line);
             }
