@@ -8,9 +8,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -33,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        TextView mensaje = findViewById(R.id.message);
+        Button b = findViewById(R.id.button);
         TextView contenido = findViewById(R.id.contenido);
 
         File dir = this.getFilesDir();
@@ -47,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
 
             while ((line = br.readLine()) != null) {
                 System.out.println(line);
-                contenido.setText(line);
             }
 
             br.close();
@@ -56,30 +57,28 @@ public class MainActivity extends AppCompatActivity {
             OutputStream os = openFileOutput("dades.txt", MODE_PRIVATE);
             EditText editText = findViewById(R.id.editFile);
 
-            editText.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                }
-
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    mensaje.setText(charSequence);
-                    try {
-                        os.write(charSequence.toString().getBytes());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void afterTextChanged(Editable editable) {
+            b.setOnClickListener(view -> {
+                try {
+                    Toast("Archivo sobrescrito");
+                    contenido.setText(editText.getText().toString());
+                    os.write(editText.getText().toString().getBytes());
+                    os.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             });
-            os.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+    }
+
+    public void Toast(CharSequence text){
+        Context context = getApplicationContext();
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
     }
 
 
